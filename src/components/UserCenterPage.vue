@@ -31,7 +31,9 @@
                             </div>
                         </el-tab-pane>
                         <el-tab-pane label="修改信息">
-                            <empty-block label="暂无此功能" v-if="isHaveArticle"></empty-block>
+                            <div class="panel-main">
+                                <empty-block label="暂无此功能" v-if="isHaveArticle"></empty-block>
+                            </div>
                         </el-tab-pane>
                         <el-tab-pane label="我的小组">
                             <div class="panel-main">
@@ -39,34 +41,37 @@
                             </div>
                         </el-tab-pane>
                         <el-tab-pane label="我的问答">
-                            <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-                                <el-tab-pane label="我的问题" name="first"><br>
-                                    <empty-block label="没有提出过问题" v-if="false"></empty-block>
-                                    <div class="panel-main">
-                                        <el-table
-                                            :data="tableData"
-                                            style="width: 100%; background:none;">
-                                            <el-table-column
-                                                prop="date"
-                                                label="日期"
-                                                width="180">
-                                            </el-table-column>
-                                            <el-table-column
-                                                prop="name"
-                                                label="姓名"
-                                                width="180">
-                                            </el-table-column>
-                                            <el-table-column
-                                                prop="address"
-                                                label="地址">
-                                            </el-table-column>
-                                        </el-table>
-                                    </div>
-                                </el-tab-pane>
-                                <el-tab-pane label="我的回答" name="second"><br>
-                                    <empty-block label="没有回答过问题" v-if="isHaveArticle"></empty-block>
-                                </el-tab-pane>
-                            </el-tabs>
+                            <div class="panel-main">
+                                <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                                    <el-tab-pane label="我的问题" name="first"><br>
+                                        <empty-block label="没有提出过问题" v-if="false"></empty-block>
+                                        <div class="panel-main">
+                                            <el-table
+                                                background="none"
+                                                :data="tableData"
+                                                style="width: 100%; background:none;">
+                                                <el-table-column
+                                                    prop="title"
+                                                    label="标题"
+                                                    width="300">
+                                                </el-table-column>
+                                                <el-table-column
+                                                    prop="time"
+                                                    label="时间"
+                                                    width="180">
+                                                </el-table-column>
+                                                <el-table-column
+                                                    prop="isAccept">
+                                                    <el-button type="success" size="mini" disabled="none">已采纳</el-button>
+                                                </el-table-column>
+                                            </el-table>
+                                        </div>
+                                    </el-tab-pane>
+                                    <el-tab-pane label="我的回答" name="second"><br>
+                                        <empty-block label="没有回答过问题" v-if="isHaveArticle"></empty-block>
+                                    </el-tab-pane>
+                                </el-tabs>
+                            </div>
                         </el-tab-pane>
                         <el-tab-pane label="我的文章">
                             <empty-block label="未发布过文章" v-if="isHaveArticle"></empty-block>
@@ -103,21 +108,21 @@ export default {
             isHaveArticle: true,
             activeName: 'first',
             tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
+                title: '问题一',
+                time: '2016-05-02',
+                isAccept: true
             }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
+                title: '问题一',
+                time: '2016-05-02',
+                isAccept: true
             }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
+                title: '问题一',
+                time: '2016-05-02',
+                isAccept: true
             }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
+                title: '问题一',
+                time: '2016-05-02',
+                isAccept: true
             }],
             form: {
                 name: '',
@@ -159,7 +164,7 @@ export default {
 .user-center-wrapper .container .userbg{
     width: 100%;
     height: 150px;
-    background-color: red;
+    /* background-color: red; */
     background-image: url('../assets/userbg.png');
     background-size: 100%;
     background-position: center;
@@ -173,7 +178,7 @@ export default {
     border-radius: 100%;
     border: 4px solid white;
     position: relative;
-    left: +300px;
+    left: 20%;
     top: +80px;
     transition-duration: 0.4s;
     cursor: pointer;

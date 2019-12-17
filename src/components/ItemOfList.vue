@@ -38,7 +38,12 @@ export default {
     methods:{
         toConcrete(){
             console.log("跳转题目:" + this.itemdata.index);
-            this.$router.push("/concrete");
+            this.$router.push({
+                name: "concrete",
+                params: {
+                    qid: this.itemdata.qid
+                }
+            });
         }
     }
 }

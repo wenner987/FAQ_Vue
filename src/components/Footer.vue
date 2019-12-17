@@ -1,5 +1,6 @@
 <template>
     <div class="footer-wrapper">
+        asd
     </div>
 </template>
 <script>

@@ -8,6 +8,7 @@ import qs from 'qs'
 import ElementUI from 'element-ui'
 import store from './store'
 import axios from 'axios'
+import VueCookies from 'vue-cookies'
 import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -18,13 +19,27 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueQuillEditor)
+Vue.use(VueCookies)
 Vue.prototype.$qs = qs
 Vue.prototype.$http = axios
+Vue.prototype.$postReqire = function(fromObj, interfacePath, parameters = {'get':'get'}, callback_success, callback_fail){
+    let url = this.$store.state.url + interfacePath;
+    this.$http.post(url, this.$qs.stringify(parameters))
+        .then(callback_success)
+        .catch(callback_fail)
+}
+Vue.prototype.$createMessage = function(label, type){
+  this.$message({
+    showClose: true,
+    message: label,
+    type: type
+  });
+}
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

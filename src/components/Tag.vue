@@ -6,8 +6,8 @@
 <script>
 export default {
     props:{
-        type:{ type:String, required:true },
-        label: {type:String, required:true}
+        type:{ type:String},
+        label: {type:String}
     }
 }
 </script>

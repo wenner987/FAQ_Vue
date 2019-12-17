@@ -1,24 +1,31 @@
 <template>
-    <div class="empty-block layout-center-column">
-        <img class="empty" src="../assets/empty.png" />
+    <div class="empty-block layout-center-column" :class="size">
+        <img :class="size" src="../assets/empty.png" />
         <p>{{label}}</p>
     </div>
 </template>
 <script>
 export default {
-    props:['label']
+    props:{
+        label:{
+
+        },
+        size:{
+            default: "normal"
+        }
+    }
 }
 </script>
 <style scoped>
 .empty-block{
     width: 100%;
-    min-height: 200px;
+    margin-top: 10px;
+    min-height: 100px;
     font-size: 13px;
     clear: gray;
     /* background: lightcoral; */
 }
 .empty-block p{ color: gray; }
-.empty-block .empty{
-    width: 200px;
-}
+.empty-block .normal{ width: 200px; }
+.empty-block .mini{ width: 100px;}
 </style>

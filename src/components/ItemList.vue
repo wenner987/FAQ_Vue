@@ -15,7 +15,7 @@
                     background
                     layout="prev, pager, next"
                     :hide-on-single-page="isOnePage"
-                    :total="30">
+                    :total="itemsdata.length">
                 </el-pagination>
             </div>
         </div>
@@ -34,144 +34,43 @@ export default {
     data(){
         return{
             isOnePage: true,
-            itemsdata:[
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
+            itemsdata:[]
+        }
+    },
+    mounted(){
+        let that = this;
+        that.getQuestionRank();
+    },
+    methods:{
+        getQuestionRank(){
+            this.$postReqire(this, '/question/getQuestionRank', {'index':0},
+                (response) =>{
+                if(response.data['ERROR'] == 0){
+                    this.itemsdata = [];
+                    for(let i=0; i<response.data['QUESTIONS'].length; ++i){
+                        this.itemsdata.push({
+                            index: 1,
+                            qid: response.data['QUESTIONS'][i]['cQid'],
+                            title: response.data['QUESTIONS'][i]['cQTitle'],
+                            hot: response.data['QUESTIONS'][i]['cHot'],
+                            score: 5,
+                            tags:[
+                                {
+                                    label:"数据库",
+                                    type:"LC"
+                                },
+                                {
+                                    label:"缓存",
+                                    type:"LA"
+                                }
+                            ]
+                        });
+                    }
+                }else{ that.$createMessage('获取问题列表失败', 'error'); }
                 },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:3,
-                    score:1,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LC"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LA"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"怎样实现一个微服务架构?",
-                    hot:10,
-                    score:20,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LA"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LD"
-                        },
-                        {
-                            label:"Redis",
-                            type:"LC"
-                        }
-                    ]
-                },
-                {
-                    index: 1,
-                    title:"Redis这个怎么办",
-                    hot:33,
-                    score:15,
-                    tags:[
-                        {
-                            label:"数据库",
-                            type:"LB"
-                        },
-                        {
-                            label:"缓存",
-                            type:"LC"
-                        },
-                        {
-                            label:"Redis",
-                            type:"LA"
-                        }
-                    ]
-                }
-            ]
+                (error) => {
+                that.$createMessage('请检查网络连接', 'error');
+            });
         }
     }
 }

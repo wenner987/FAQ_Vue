@@ -13,7 +13,12 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-      component: LoginPage
+      component: LoginPage,
+      beforeEnter:(to, from, next) =>{
+        next(vm => {
+          
+        })
+      }
     },
     {
       path: '/index',

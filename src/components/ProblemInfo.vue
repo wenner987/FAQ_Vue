@@ -5,30 +5,30 @@
             <div class="name layout-center-column">
                 <div v-if="type === 'article'"><label>作者</label></div>
                 <div v-else><label>提问者</label></div>
-                <label class="name-val">Alphakin</label>
+                <label class="name-val">{{data.username}}</label>
             </div>
         </div>
         <el-divider style="margin-top:5px;margin-bottom:5px;"></el-divider>
         <table class="problem-desc">
             <tr v-if="type === 'question'">
                 <td>问题悬赏</td>
-                <td><span class="fa fa-star" style="color:orange;">&nbsp;</span>10</td>
+                <td><span class="fa fa-star" style="color:orange;">&nbsp;</span>5</td>
             </tr>
             <tr>
                 <td>浏览次数</td>
-                <td>231</td>
+                <td>{{data.hot}}</td>
             </tr>
             <tr>
                 <td v-if="type === 'article'">评论数量</td>
                 <td v-if="type === 'question'">回答数量</td>
-                <td>3</td>
+                <td>{{data.count}}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
 export default {
-    props:["type"],
+    props:["type", "data"],
     data(){
         return{
             circleUrl: "https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1912113785,1587702892&fm=26&gp=0.jpg"

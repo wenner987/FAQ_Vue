@@ -9,23 +9,21 @@
                     <div class="panel">
                         <el-form ref="form" :model="form" label-width="80px">
                             <el-form-item label="设置标题">
-                                <el-input v-model="form.name"></el-input>
+                                <el-input v-model="form.title"></el-input>
                             </el-form-item>
                             <el-form-item label="内容">
                                 <div class="edit_container">
                                     <quill-editor
                                         v-model="content" 
-                                        ref="myQuillEditor" 
+                                        ref="myQuillEditor"
                                         :options="editorOption" 
                                         @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                                         @change="onEditorChange($event)">
                                     </quill-editor>
                                 </div>
                             </el-form-item>
-                            
-
                             <el-form-item>
-                                <el-button type="primary" @click="saveHtml">立即创建</el-button>
+                                <el-button type="primary" @click="addQuestion()">立即创建</el-button>
                                 <el-button>取消</el-button>
                             </el-form-item>
                         </el-form>
@@ -44,7 +42,7 @@ export default {
     data() {
       return {
         form: {
-          name: '',
+          title: '',
           region: '',
           date1: '',
           date2: '',
@@ -68,9 +66,23 @@ export default {
         onEditorBlur(){}, // 失去焦点事件
         onEditorFocus(){}, // 获得焦点事件
         onEditorChange(){}, // 内容改变事件
-        saveHtml:function(event){
-          alert(this.content);
+        addQuestion(){
+            this.$postReqire(this, '/question/addQuestion',
+                {
+                    'cUid':this.$store.state.user.uid,
+                    'cQTitle':this.form.title,
+                    'cQContext':this.content
+                },
+                (response) =>{
+                    if(response.data['ERROR'] == 0){
+                        
+                    }else{ this.$createMessage('获取今日提问数量失败', 'error'); }
+                },
+                (error) => {
+                    this.$createMessage('请检查网络连接', 'error');
+                })
         }
+
     }
 }
 </script>

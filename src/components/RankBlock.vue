@@ -4,42 +4,16 @@
             <span class="fa fa-rocket">&nbsp;</span>问答排行
         </div>
         <div class="container">
-            <el-container class="item">
+            <el-container class="item" v-for="(item, index) in userList" :key="index">
                 <el-aside width="60px">
                     <img class="head" src="../assets/head/17180600418.jpeg" />
                 </el-aside>
                 <el-main style="margin:5px; padding:0;">
                     <div class="name">
-                        <label>Alphakin</label>
+                        <label>{{item.username}}</label>
                         <el-button class="thumb" size="mini" type="info" round><span class="fa fa-thumbs-up">&nbsp;</span>+1</el-button>    
                     </div>
-                    <div class="score">积分: 1234</div>
-                </el-main>
-            </el-container>
-
-            <el-container class="item">
-                <el-aside width="60px">
-                    <img class="head" src="../assets/head/17180600416.jpg" />
-                </el-aside>
-                <el-main style="margin:5px; padding:0;">
-                    <div class="name">
-                        <label>墨尔本</label>
-                        <el-button class="thumb" size="mini" type="info" round><span class="fa fa-thumbs-up">&nbsp;</span>+1</el-button>    
-                    </div>
-                    <div class="score">积分: 1002</div>
-                </el-main>
-            </el-container>
-
-            <el-container class="item">
-                <el-aside width="60px">
-                    <img class="head" src="../assets/head/17180600419.jpg" />
-                </el-aside>
-                <el-main style="margin:5px; padding:0;">
-                    <div class="name">
-                        <label>PiKa</label>
-                        <el-button class="thumb" size="mini" type="info" round><span class="fa fa-thumbs-up">&nbsp;</span>+1</el-button>    
-                    </div>
-                    <div class="score">积分: 992</div>
+                    <div class="score">积分: {{item.score}}</div>
                 </el-main>
             </el-container>
         </div>
@@ -47,7 +21,7 @@
 </template>
 <script>
 export default {
-    
+    props:['userList']
 }
 </script>
 <style scoped>

@@ -35,6 +35,37 @@ Vue.prototype.$createMessage = function(label, type){
     type: type
   });
 }
+Vue.prototype.$getHeadLevel = function(score){
+  let limit = [25, 50, 75, 100]
+  let res = limit.length;
+  for(let i=0; i<limit.length; ++i){
+    // alert(parseInt(score));
+    if(score < limit[i]){
+      res = (i+1).toString();
+      break;
+    }
+  }
+  res = res + ".png";
+  // alert(res);
+  return res;
+}
+Vue.prototype.$certify = function(){
+    if(this.$cookies.get("username") == null && this.$cookies.get("password") == null) return;
+    this.$postReqire(this.$store.state.url, '/user/login', 
+      {
+          "username": this.$cookies.get("username"), 
+          "password": this.$cookies.get("password"),
+          "autoLogin": 0
+      },
+      (response) => {
+          if(response.data['ERROR'] == 0){
+            this.$store.state.islogined = true;
+            this.$store.state.user.score = response.data['USER_INFO']['cScore'];
+            this.$store.state.user.head = require("@/assets/head/" + this.$getHeadLevel(response.data['USER_INFO']['cScore']));
+          }else{ this.$store.state.user.head = require("@/assets/head/default_head.png"); }
+      },
+      (error) => { this.$store.state.user.head = require("@/assets/head/default_head.png"); });
+}
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

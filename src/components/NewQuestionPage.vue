@@ -14,6 +14,7 @@
                             <el-form-item label="内容">
                                 <div class="edit_container">
                                     <quill-editor
+                                        style="height: 300px;"
                                         v-model="content" 
                                         ref="myQuillEditor"
                                         :options="editorOption" 
@@ -22,9 +23,8 @@
                                     </quill-editor>
                                 </div>
                             </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="addQuestion()">立即创建</el-button>
-                                <el-button>取消</el-button>
+                            <el-form-item style="margin-top:100px;">
+                                <el-button type="primary" @click="addQuestion()" round>&emsp;提问&emsp;</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -81,7 +81,21 @@ export default {
                 (error) => {
                     this.$createMessage('请检查网络连接', 'error');
                 })
-        }
+        },
+
+        //添加文章
+        addArticle(uid, gid, title, context){
+            this.$postReqire(this, '/article/add', 
+                { 'cUid':uid, 'cGid':gid, 'cArtTitle':title, 'cArtContext':context },
+                (response) =>{
+                    if(response.data['ERROR'] == 0){
+                        that.$createMessage('添加文章成功', 'success');
+                    }else{ that.$createMessage('添加文章失败', 'error'); }
+                },
+                (error) => {
+                    that.$createMessage('请检查网络连接', 'error');
+                })
+        },
 
     }
 }
@@ -122,7 +136,9 @@ export default {
     text-align: left;
     background: white;
     border-radius: 15px;
-    padding: 40px;
+    padding: 70px;
+    padding-right: 120px;
+    padding-bottom: 30px;
 
     box-shadow: 0px 0px 15px 3px rgba(200,200,200,0.3);
 }

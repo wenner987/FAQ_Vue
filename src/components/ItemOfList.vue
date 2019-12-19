@@ -39,8 +39,8 @@ export default {
         toConcrete(){
             console.log("跳转题目:" + this.itemdata.index);
             this.$router.push({
-                name: "concrete",
-                params: {
+                path: "/concrete",
+                query: {
                     qid: this.itemdata.qid
                 }
             });

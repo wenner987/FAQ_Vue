@@ -6,7 +6,7 @@
         <div class="container">
             <el-container class="item" v-for="(item, index) in userList" :key="index">
                 <el-aside width="60px">
-                    <img class="head" src="../assets/head/17180600418.jpeg" />
+                    <img class="head" :src="item.head" />
                 </el-aside>
                 <el-main style="margin:5px; padding:0;">
                     <div class="name">
@@ -21,7 +21,21 @@
 </template>
 <script>
 export default {
-    props:['userList']
+    props:['userList'],
+    computed:{
+        userName:{ get(){ return this.$store.state.user.username; } },
+        score:{ get(){ return this.$store.state.user.score; } },
+        headPath:{
+            get(){
+                this.$getHeadLevel
+            }
+        },
+    },
+    methods:{
+        test(){
+            
+        }
+    }
 }
 </script>
 <style scoped>

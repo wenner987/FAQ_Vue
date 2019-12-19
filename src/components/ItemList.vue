@@ -14,8 +14,10 @@
                 <el-pagination
                     background
                     layout="prev, pager, next"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
                     :hide-on-single-page="isOnePage"
-                    :total="itemsdata.length">
+                    :total="questionAmount">
                 </el-pagination>
             </div>
         </div>
@@ -34,16 +36,25 @@ export default {
     data(){
         return{
             isOnePage: true,
-            itemsdata:[]
+            itemsdata:[],
+
+            currentPage: 1,
         }
     },
     mounted(){
         let that = this;
-        that.getQuestionRank();
+        that.getQuestionRank(0);
+    },
+    computed:{
+        questionAmount: { get(){ return this.$store.state.common.questionAmount; } }
     },
     methods:{
-        getQuestionRank(){
-            this.$postReqire(this, '/question/getQuestionRank', {'index':0},
+        handleCurrentChange(val) {
+            this.currentPage = val;
+            this.getQuestionRank(parseInt(val)-1);
+        },
+        getQuestionRank(index){
+            this.$postReqire(this, '/question/getQuestionRank', {'index':index},
                 (response) =>{
                 if(response.data['ERROR'] == 0){
                     this.itemsdata = [];

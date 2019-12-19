@@ -7,20 +7,21 @@
             <el-submenu style="margin-right:10%;" index="1" class="item">
                 <template slot="title">
                     <el-badge is-dot class="badge">
-                        <div><img class="mini-icon" src="../assets/head/default_head.png" />个人中心</div>
+                        <div><img class="mini-icon" :src="headPath" />个人中心</div>
                     </el-badge>
                 </template>
                 <div class="user-block">
                     <div v-if="islogined">
                         <div class="head-block layout-center-column">
-                            <img src="../assets/head/17180600414.jpg" />Alphakin
+                            <img :src="headPath" />{{userName}}
                         </div>
                         <div class="userinfo-list">
                             <table>
-                                <tr><td>所属组</td><td>呵呵组</td></tr>
-                                <tr><td>积分数</td><td>1242</td></tr>
+                                <tr><td><span class="fa fa-group">&nbsp;</span>所属组</td><td>呵呵组</td></tr>
+                                <tr><td><span class="fa fa-address-book">&nbsp;</span>积分数</td><td>{{score}}</td></tr>
                             </table>
-                            <el-button @click="leaveTo('/user')" style="margin-top: 10px;width:80%; margin-left:10%;" size="small" type="info" round>详细信息</el-button>
+                            <el-button @click="leaveTo('/user')" style="margin-top: 10px;width:80%; margin-left:10%;" size="small" type="primary" round>详细信息</el-button>
+                            <el-button @click="logout()" style="margin-top: 10px;width:80%; margin-left:10%;" size="small" type="danger" round>登出</el-button>
                         </div>
                     </div>
                     <div v-else style="text-align: center; padding:20px;">
@@ -37,15 +38,18 @@
                 </template>
                 <el-menu-item v-for="(item, index) in message" :key="index" index="index">
                     <div class="my-msg">
-                        <label>
-                            <span v-if="item.type=='sys'" class="fa fa-envelope-open-o">&nbsp;</span>
-                            <span v-if="item.type=='usr'" class="fa fa-quote-left">&nbsp;</span>
+                        <div>
+                            <span v-if="item.type==1" class="fa fa-envelope-open-o">&nbsp;系统消息: </span>
+                            <span v-if="item.type==2" class="fa fa-quote-left">&nbsp;用户消息: </span>
                             {{item.content}}
-                        </label>
+                        </div>
                     </div>
                 </el-menu-item>
             </el-submenu>
-            <el-menu-item @click="leaveTo('/newquestion')" class="item">
+            <el-menu-item index="3" class="item">
+                <span class="fa fa-question-circle">&nbsp;</span>写文章
+            </el-menu-item>
+            <el-menu-item index="4" @click="leaveTo('/newquestion', true)" class="item">
                 <span class="fa fa-question-circle">&nbsp;</span>我要提问
             </el-menu-item>
         </el-menu>
@@ -67,31 +71,47 @@ export default {
       return {
         activeIndex: '1',
         showLoginPanel: false,
-        circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-        squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
-        sizeList: ["large", "medium", "small"],
-        islogin: false,
         message:[]
       };
     },
     computed:{
+        userName:{ get(){ return this.$store.state.user.username; } },
+        score:{ get(){ return this.$store.state.user.score; } },
+        headPath:{ get(){ return this.$store.state.user.head; } },
         islogined :{
             get(){ return this.$store.state.islogined },
-            set(){ }
         }
     },
     mounted(){
         let that = this;
+        that.$certify();
         that.getUserMessage();
     },
     methods: {
         handleSelect(key, keyPath) {
             alert(key + ' ' + keyPath);
         },
-        leaveTo(url){
+        leaveTo(url, limit = false){
+            if(limit && !this.islogined){ this.$createMessage('请先登录!', 'warning'); return; }
             this.$router.push(url);
         },
-
+        logout(){
+            this.$store.state.islogined = false;
+            this.$cookies.remove("username");
+            this.$store.state.user.head = require('../assets/head/default_head.png'),
+            this.$createMessage('登出成功', 'success');
+        },
+        getUserById(uid){
+            this.$postReqire(this, '/user/getUserById', {'uid': uid},
+                (response) =>{
+                    if(response.data['ERROR'] == 0){
+                        
+                    }
+                },(error) => {
+                    that.$createMessage('请检查网络连接', 'error');
+                }
+            );
+        },
         getUserMessage(){
             this.$postReqire(this, '/message/getMessage', {'uid':25},
                 (response) => {
@@ -100,13 +120,11 @@ export default {
                         this.message = [];
                         for(let i=0; i<response.data['MESSAGES'].length; ++i){
                             // 1评论
-                            if(response.data['MESSAGES'][i]['cMessageType'] == 1){
-                                this.message.push({
-                                    mid:response.data['MESSAGES'][i]['cMessageId'],
-                                    type:'usr',
-                                    content:response.data['MESSAGES'][i]['cMessageSource']
-                                });
-                            }
+                            this.message.push({
+                                mid:response.data['MESSAGES'][i]['cMessageId'],
+                                type:response.data['MESSAGES'][i]['cMessageType'],
+                                content:response.data['MESSAGES'][i]['cMessageSource']
+                            });
                         }
                     }else{ that.$createMessage('获取消息失败', 'warning'); }
                 },

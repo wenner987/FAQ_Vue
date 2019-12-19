@@ -5,19 +5,30 @@
                 <toper></toper>
             </el-header>
             <el-main class="scroll-view" style="padding:0;">
-                <el-button @click="getQuestion()">获取问题</el-button>
-                <el-button @click="addArticle()">添加文章</el-button>
-                <el-button @click="updateArticle()">修改文章</el-button>
-                <el-button @click="deleteArticle()">删除文章</el-button>
-                <el-button @click="getAllArticle()">获取所有文章</el-button>
+                <!-- <el-button @click="addArticle()">添加文章</el-button> -->
+                <!-- <el-button @click="updateArticle()">修改文章</el-button> -->
+                <!-- <el-button @click="deleteArticle()">删除文章</el-button> -->
+                <!-- <el-button @click="getAllArticle()">获取所有文章</el-button> -->
                 <div class="container-main">
                     <div class="left"><problem-block :title="questionInfo.title" :context="questionInfo.context"></problem-block></div>
                     <!-- question=问题 artical=文章-->
                     <div class="right"><problem-info v-bind:data="questionInfo" type="question"></problem-info></div>
-                    <div class="operate">
-                        <el-button @click="addAnswer()" type="success" class="right" round>我要回答</el-button>
+                    <div class="operate right">
+                        <el-dialog :modal-append-to-body="false" title="回答问题" width="800px" :visible.sync="showAnswerComment">
+                            <div class="edit_container" style="padding:20px;">
+                                <quill-editor
+                                    style="height:200px;"
+                                    v-model="content" 
+                                    ref="myQuillEditor"
+                                    :options="editorOption" 
+                                    @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+                                    @change="onEditorChange($event)">
+                                </quill-editor>
+                            </div>
+                        </el-dialog>
+                        <el-button type="success" @click="addAnswer()" round>我要回答</el-button>
                     </div>
-                    <div class="left"><answer-block v-bind:data="questionInfo"></answer-block></div>
+                    <div class="left"><answer-block v-bind:quesid="questionInfo.qid"></answer-block></div>
                 </div>
             </el-main>
         </el-container>
@@ -37,15 +48,21 @@ export default {
     },
     data(){
         return {
+            showAnswerComment: false,
             questionInfo:{
                 username: '',
                 hot: 0,
                 count: 0,
                 time: '',
                 title:'',
-                context:''
+                context:'',
+                qid: this.$route.query.qid
             }
         }
+    },
+    mounted(){
+        let that = this;
+        that.getQuestion();
     },
     methods:{
         //通过un获取user
@@ -65,7 +82,7 @@ export default {
         //添加回答
         addAnswer(){
             this.$postReqire(this, '/answer/addAnswer', 
-                { 'cQid':11, 'cUid':25, 'cAnsContext':'这是回答' },
+                { 'cQid':11, 'cUid':this.$store.state.user.uid, 'cAnsContext':'这是回答' },
                 (response) =>{
                 if(response.data['ERROR'] == 0){
                     
@@ -75,14 +92,13 @@ export default {
                     that.$createMessage('请检查网络连接', 'error');
                 })
         },
-        
-        
+
+
         //获取问题
         getQuestion(){
-            alert(this.$route.params.qid);
             let that = this;
             this.$postReqire(this, '/question/getQuestion', 
-                { 'cQid': this.$route.params.qid },
+                { 'cQid': this.$route.query.qid },
                 (response) =>{
                 if(response.data['ERROR'] == 0){
                     that.questionInfo.username = response.data['QUESTION']['C_USERNAME'];
@@ -91,7 +107,6 @@ export default {
                     that.questionInfo.time = response.data['QUESTION']['C_CREATE_TIME'];
                     that.questionInfo.title = response.data['QUESTION']['C_Q_TITLE'];
                     that.questionInfo.context = response.data['QUESTION']['C_Q_CONTEXT'];
-                    alert(that.questionInfo.username);
                 }else{ that.$createMessage('获取问题失败', 'error'); }
                 },
                 (error) => {
@@ -99,19 +114,6 @@ export default {
                 })
         },
 
-        //添加文章
-        addArticle(){
-            this.$postReqire(this, '/article/add', 
-                { 'cUid':25, 'cGid':1, 'cArtTitle':'文章标题', 'cArtContext':'这是文章正文' },
-                (response) =>{
-                if(response.data['ERROR'] == 0){
-                    
-                }else{ that.$createMessage('添加文章失败', 'error'); }
-                },
-                (error) => {
-                    that.$createMessage('请检查网络连接', 'error');
-                })
-        },
         //修改文章 
         updateArticle(){
             this.$postReqire(this, '/article/update', 

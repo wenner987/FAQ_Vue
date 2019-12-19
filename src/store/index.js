@@ -8,8 +8,12 @@ const store = new Vuex.Store({
         user:{
             uid:25,
             username:'ss3295286',
+            head: require('@/assets/head/default_head.png'),
             score:11,
             gid:1
+        },
+        common:{
+            questionAmount: 0
         },
         // url:'http://39.105.58.247:17777',
         isAuto: true,

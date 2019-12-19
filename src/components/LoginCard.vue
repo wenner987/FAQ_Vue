@@ -87,9 +87,11 @@ export default {
         };
     },
     computed:{
+        headPath:{
+            get(){ return this.$store.state.user.head; }
+        },
         isAuto: {
-            get(){ return this.$store.state.isAuto; },
-            set(){ }
+            get(){ return this.$store.state.isAuto; }
         }
     },
     mounted(){
@@ -116,10 +118,14 @@ export default {
                         that.$store.state.user.score = response.data['USER_INFO']['cScore'];
                         that.$store.state.user.gid = response.data['USER_INFO']['cGid'];
                         that.$createMessage('登录成功', 'success');
-                        this.$store.state.isLogined = true;
+                        this.$cookies.set("username", response.data['USER_INFO']['cUsername']);
+                        this.$cookies.set("password", this.loginForm.pass);
+                        this.$cookies.set("score", response.data['USER_INFO']['cScore']);
+                        this.$store.state.user.head = require("@/assets/head/" + that.$getHeadLevel(response.data['USER_INFO']['cScore']));
+                        this.$store.state.islogined = true;
                     }else{ that.$createMessage('登录失败', 'error'); }
                 },
-                (error) => { that.$createMessage('请检查网络连接', 'error'); });
+                (error) => { alert(error); that.$createMessage('请检查网络连接', 'error'); });
         },
         registe(){
             let that = this;
